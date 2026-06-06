@@ -1,0 +1,52 @@
+local function get_command_output(command)No Media Playing ]" end
+
+    local position = tonumber(get_command_output("playerctl position")) or 0 local duration = 
+    tonumber(get_command_output("playerctl metadata mpris:length")) or 0
+    
+    -- playerctl length is in microseconds, position is in seconds duration = duration / 1000000
+
+    if duration <= 0 then return "[ Live Stream ]" end
+
+    local bar_width = math.floor(width * 0.6)
+    local progress = position / duration
+    local filled = math.floor(bar_width * progress)
+    local empty = bar_width - filled
+
+    local bar = "[" .. string.rep("#", filled) .. string.rep("-", empty) .. "]"
+    local time_info = string.format(" %d:%02d / %d:%02d", 
+        math.floor(position/60), position%60, 
+        math.floor(duration/60), duration%60)
+    
+    return bar .. time_info
+end
+
+local function main()
+    local width = get_terminal_width()
+    
+    local art = [[
+FUCK MODI AND HIS ALIBIS🐇.𖥔 ݁ ˖ִ ࣪⚝₊ ⊹˚ 
+⠀⠀⠀⢠⡾⠲⠶⣤⣀⣠⣤⣤⣤⡿⠛⠿⡴⠾⠛⢻⡆⠀⠀⠀
+⠀⠀⠀⣼⠁⠀⠀⠀⠉⠁⠀⢀⣿⠐⡿⣿⠿⣶⣤⣤⣷⡀⠀⠀
+⠀⠀⠀⢹⡶⠀⠀⠀⠀⠀⠀⠌⢯⣡⣿⣿⣀⣸⣿⣦⢓⡟⠀⠀
+⠀⠀⢀⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠹⣍⣭⣾⠁⠀⠀
+⠀⣀⣸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣷⣤⡀
+⠈⠉⠹⣏⡁⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⢀⣸⣇⣀⠀
+⠀⠐⠋⢻⣅⣄⢀⣀⣀⡀⠀⠯⠽⠀⢀⣀⣀⡀⠀⣤⣿⠀⠉⠀
+⠀⠀⠴⠛⠙⣳⠋⠉⠉⠙⣆⠀⠀⢰⡟⠉⠈⠙⢷⠟⠉⠙⠂⠀
+⠀⠀⠀⠀⠀⢻⣄⣠⣤⣴⠟⠛⠛⠛⢧⣤⣤⣀⡾⠀⠀⠀⠀⠀]]
+
+    local title = get_command_output("playerctl metadata xesam:title 2>/dev/null")
+    if title == "" then title = "Nothing Playing" end
+
+    local progress_bar = create_progress_bar(width)
+
+    -- Clear screen
+    os.execute("clear")
+    
+    -- Print everything centered
+    print("\n" .. center_text(art, width))
+    print("\n" .. center_text("NOW PLAYING: " .. title, width))
+    print(center_text(progress_bar, width))
+end
+
+main()

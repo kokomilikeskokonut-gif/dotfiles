@@ -1,0 +1,45 @@
+0 local duration = (tonumber(dur_str) or 0) / 1000000
+
+    if duration <= 0 then return "[ Live ]" end
+
+    local bar_max_width = math.floor(width * 0.4)
+    local progress = math.min(1, position / duration)
+    local filled = math.floor(bar_max_width * progress)
+    local empty = bar_max_width - filled
+
+    local bar = "[" .. string.rep("#", filled) .. string.rep("-", empty) .. "]"
+    local time_info = string.format(" %d:%02d / %d:%02d", 
+        math.floor(position/60), math.floor(position%60), 
+        math.floor(duration/60), math.floor(duration%60))
+    
+    return bar .. time_info
+end
+
+local function main()
+    local width = get_terminal_width()
+    
+    local art = [[
+ 
+	⠀⠀⠀⢠⡾⠲⠶⣤⣀⣠⣤⣤⣤⡿⠛⠿⡴⠾⠛⢻⡆⠀⠀⠀
+	⠀⠀⠀⣼⠁⠀⠀⠀⠉⠁⠀⢀⣿⠐⡿⣿⠿⣶⣤⣤⣷⡀⠀⠀
+	⠀⠀⠀⢹⡶⠀⠀⠀⠀⠀⠀⠌⢯⣡⣿⣿⣀⣸⣿⣦⢓⡟⠀⠀
+	⠀⠀⢀⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠹⣍⣭⣾⠁⠀⠀
+	⠀⣀⣸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣷⣤⡀
+	⠈⠉⠹⣏⡁⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⢀⣸⣇⣀⠀
+	⠀⠐⠋⢻⣅⣄⢀⣀⣀⡀⠀⠯⠽⠀⢀⣀⣀⡀⠀⣤⣿⠀⠉⠀
+	⠀⠀⠴⠛⠙⣳⠋⠉⠉⠙⣆⠀⠀⢰⡟⠉⠈⠙⢷⠟⠉⠙⠂⠀
+	⠀⠀⠀⠀⠀⢻⣄⣠⣤⣴⠟⠛⠛⠛⢧⣤⣤⣀⡾⠀⠀⠀⠀⠀]]
+
+    local title = get_command_output("playerctl metadata xesam:title")
+    if title == "" then title = "Nothing Playing" end
+
+    local progress_bar = create_progress_bar(width)
+
+    -- Clear terminal and print output
+    io.write("\027[H\027[2J")
+    print("\n" .. center_text(art, width))
+    print("\n" .. center_text(title, width))
+    print(center_text(progress_bar, width))
+end
+
+main()
